@@ -8,9 +8,15 @@ import { stripe } from "~/server/payments/stripe";
 const monthlySubscriptionId = "price_1NvuQfD9O8N71IpYGb8e1BeC";
 
 function parseRedirectionUrl(pathname: string) {
-  const redirectionUrl = new URL(env.NEXTAUTH_URL);
-  redirectionUrl.pathname = pathname;
-  return redirectionUrl.href;
+  if (pathname === "/" || !pathname) return env.NEXTAUTH_URL;
+
+  try {
+    const redirectionUrl = new URL(env.NEXTAUTH_URL);
+    redirectionUrl.pathname = pathname;
+    return redirectionUrl.href;
+  } catch (error) {
+    return env.NEXTAUTH_URL;
+  }
 }
 
 export const paymentsRouter = createTRPCRouter({
