@@ -7,29 +7,15 @@ import { stripe } from "~/server/payments/stripe";
 
 const monthlySubscriptionId = "price_1NvuQfD9O8N71IpYGb8e1BeC";
 
-function parseRedirectionUrl(pathname: string) {
-  if (pathname === "/" || !pathname) return env.NEXT_PUBLIC_URL;
-
-  try {
-    const redirectionUrl = new URL(env.NEXT_PUBLIC_URL);
-    redirectionUrl.pathname = pathname;
-    return redirectionUrl.href;
-  } catch (error) {
-    return env.NEXT_PUBLIC_URL;
-  }
-}
-
 export const paymentsRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure
     .input(z.object({ redirectionPage: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      const redirectionUrl = parseRedirectionUrl(input.redirectionPage);
-
+    .mutation(async ({ ctx }) => {
       const checkoutSession = await stripe.checkout.sessions.create({
         mode: "subscription",
         line_items: [{ price: monthlySubscriptionId, quantity: 1 }],
-        success_url: redirectionUrl,
-        cancel_url: redirectionUrl,
+        success_url: env.NEXT_PUBLIC_URL,
+        cancel_url: env.NEXT_PUBLIC_URL,
         customer: ctx.session.user.stripeCustomerId,
       });
 
@@ -45,12 +31,10 @@ export const paymentsRouter = createTRPCRouter({
 
   createBillingPortalSession: protectedProcedure
     .input(z.object({ redirectionPage: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      const redirectionUrl = parseRedirectionUrl(input.redirectionPage);
-
+    .mutation(async ({ ctx }) => {
       const portalSession = await stripe.billingPortal.sessions.create({
         customer: ctx.session.user.stripeCustomerId,
-        return_url: redirectionUrl,
+        return_url: env.NEXT_PUBLIC_URL,
       });
 
       return { url: portalSession.url };
