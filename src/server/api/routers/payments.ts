@@ -25,6 +25,8 @@ export const paymentsRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const redirectionUrl = parseRedirectionUrl(input.redirectionPage);
 
+      console.log({ redirectionUrl, nextAuthUrl: env.NEXTAUTH_URL });
+
       const checkoutSession = await stripe.checkout.sessions.create({
         mode: "subscription",
         line_items: [{ price: monthlySubscriptionId, quantity: 1 }],
