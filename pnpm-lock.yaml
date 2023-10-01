@@ -26,9 +26,6 @@ dependencies:
   '@react-email/components':
     specifier: 0.0.7
     version: 0.0.7
-  '@sendgrid/mail':
-    specifier: ^7.7.0
-    version: 7.7.0
   '@t3-oss/env-nextjs':
     specifier: ^0.6.0
     version: 0.6.0(typescript@5.1.6)(zod@3.21.4)
@@ -2162,33 +2159,6 @@ packages:
       selderee: 0.10.0
     dev: false
 
-  /@sendgrid/client@7.7.0:
-    resolution: {integrity: sha512-SxH+y8jeAQSnDavrTD0uGDXYIIkFylCo+eDofVmZLQ0f862nnqbC3Vd1ej6b7Le7lboyzQF6F7Fodv02rYspuA==}
-    engines: {node: 6.* || 8.* || >=10.*}
-    dependencies:
-      '@sendgrid/helpers': 7.7.0
-      axios: 0.26.1
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
-  /@sendgrid/helpers@7.7.0:
-    resolution: {integrity: sha512-3AsAxfN3GDBcXoZ/y1mzAAbKzTtUZ5+ZrHOmWQ279AuaFXUNCh9bPnRpN504bgveTqoW+11IzPg3I0WVgDINpw==}
-    engines: {node: '>= 6.0.0'}
-    dependencies:
-      deepmerge: 4.3.1
-    dev: false
-
-  /@sendgrid/mail@7.7.0:
-    resolution: {integrity: sha512-5+nApPE9wINBvHSUxwOxkkQqM/IAAaBYoP9hw7WwgDNQPxraruVqHizeTitVtKGiqWCKm2mnjh4XGN3fvFLqaw==}
-    engines: {node: 6.* || 8.* || >=10.*}
-    dependencies:
-      '@sendgrid/client': 7.7.0
-      '@sendgrid/helpers': 7.7.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /@swc/helpers@0.5.1:
     resolution: {integrity: sha512-sJ902EfIzn1Fa+qYmjdQqh8tPsoxyBz+8yBKC2HKUxyezKJFwPGOn7pv4WY6QuQW//ySQi5lJjA/ZT9sNWWNTg==}
     dependencies:
@@ -2730,14 +2700,6 @@ packages:
     resolution: {integrity: sha512-/dlp0fxyM3R8YW7MFzaHWXrf4zzbr0vaYb23VBFCl83R7nWNPg/yaQw2Dc8jzCMmDVLhSdzH8MjrsuIUuvX+6g==}
     engines: {node: '>=4'}
     dev: true
-
-  /axios@0.26.1:
-    resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}
-    dependencies:
-      follow-redirects: 1.15.3
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /axobject-query@3.2.1:
     resolution: {integrity: sha512-jsyHu61e6N4Vbz/v18DHwWYKK0bSWLqn47eeDSKPB7m8tqMHF9YJ+mhIk2lVteyZrY8tnSj/jHOv4YiTCuCJgg==}
@@ -3784,16 +3746,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       tslib: 2.6.2
-    dev: false
-
-  /follow-redirects@1.15.3:
-    resolution: {integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
     dev: false
 
   /for-each@0.3.3:
