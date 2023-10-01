@@ -1,0 +1,106 @@
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { render } from "@react-email/components";
+import { type GetServerSidePropsContext } from "next";
+import {
+  getServerSession,
+  type DefaultSession,
+  type NextAuthOptions,
+} from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+
+import { env } from "~/env.mjs";
+import { db } from "~/server/db";
+import { stripe } from "./payments/stripe";
+import { emailSender } from "./emails";
+import WelcomeEmail from "~/emails/Welcome";
+
+/**
+ * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
+ * object and keep type safety.
+ *
+ * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
+ */
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: DefaultSession["user"] & {
+      id: string;
+      isActive: boolean;
+      stripeCustomerId: string;
+      // ...other properties
+      // role: UserRole;
+    };
+  }
+
+  interface User {
+    // ...other properties
+    // role: UserRole;
+    isActive: boolean;
+    stripeCustomerId: string;
+  }
+}
+
+/**
+ * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
+ *
+ * @see https://next-auth.js.org/configuration/options
+ */
+export const authOptions: NextAuthOptions = {
+  events: {
+    createUser: async ({ user }) => {
+      void emailSender.send({
+        to: user.email!,
+        subject: "Welcome to curated.",
+        template: render(WelcomeEmail({ name: user.email!, actionLink: "" })),
+      });
+
+      const customer = await stripe.customers.create({
+        email: user.email!,
+        name: user.name!,
+      });
+
+      await db.user.update({
+        where: { id: user.id },
+        data: { stripeCustomerId: customer.id },
+      });
+    },
+  },
+  callbacks: {
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: user.id,
+        isActive: user.isActive,
+        stripeCustomerId: user.stripeCustomerId,
+      },
+    }),
+  },
+  adapter: PrismaAdapter(db),
+  providers: [
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    /**
+     * ...add more providers here.
+     *
+     * Most other providers require a bit more work than the Discord provider. For example, the
+     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
+     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
+     *
+     * @see https://next-auth.js.org/providers/github
+     */
+  ],
+};
+
+/**
+ * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
+ *
+ * @see https://next-auth.js.org/configuration/nextjs
+ */
+export const getServerAuthSession = (ctx: {
+  req: GetServerSidePropsContext["req"];
+  res: GetServerSidePropsContext["res"];
+}) => {
+  return getServerSession(ctx.req, ctx.res, authOptions);
+};

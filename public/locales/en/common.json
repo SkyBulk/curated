@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "title": "curated.",
+    "description": "Daily curated content to become the most interesting person in the room."
+  },
+  "auth": {
+    "img": "People having a conversation in a living room",
+    "headline": "Become the most interesting person in the room with the best daily content.",
+    "signIn": "Continue with {{provider}}",
+    "legal": "By continuing you accept our <terms>terms</terms> and <privacy>privacy policy</privacy>"
+  },
+  "topbar": {
+    "manage": "Manage subscription",
+    "premium": "Go premium",
+    "signOut": "Log out"
+  },
+  "paywall": {
+    "headline": "You've seen the teaser, and it's left you curious, right? 🤔",
+    "subheadline": "Continue reading by subscribing for less than a dollar per week.",
+    "action": "Subscribe"
+  }
+}
