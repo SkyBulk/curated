@@ -8,14 +8,14 @@ import { stripe } from "~/server/payments/stripe";
 const monthlySubscriptionId = "price_1NvuQfD9O8N71IpYGb8e1BeC";
 
 function parseRedirectionUrl(pathname: string) {
-  if (pathname === "/" || !pathname) return env.NEXTAUTH_URL;
+  if (pathname === "/" || !pathname) return env.NEXT_PUBLIC_URL;
 
   try {
-    const redirectionUrl = new URL(env.NEXTAUTH_URL);
+    const redirectionUrl = new URL(env.NEXT_PUBLIC_URL);
     redirectionUrl.pathname = pathname;
     return redirectionUrl.href;
   } catch (error) {
-    return env.NEXTAUTH_URL;
+    return env.NEXT_PUBLIC_URL;
   }
 }
 
@@ -24,8 +24,6 @@ export const paymentsRouter = createTRPCRouter({
     .input(z.object({ redirectionPage: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const redirectionUrl = parseRedirectionUrl(input.redirectionPage);
-
-      console.log({ redirectionUrl, nextAuthUrl: env.NEXTAUTH_URL });
 
       const checkoutSession = await stripe.checkout.sessions.create({
         mode: "subscription",
